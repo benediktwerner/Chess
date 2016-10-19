@@ -1,5 +1,7 @@
 package de.benedikt_werner.chess;
 
+import java.awt.Point;
+
 public class Game {
 	private Board mBoard;
 	private Player mAcvitePlayer;
@@ -16,11 +18,26 @@ public class Game {
 		}
 	}
 	
+	public boolean executeMove(Point start, Point end) {
+		Piece p = mBoard.pieceAt(start);
+		if (p.isValidMove(mBoard, end)) {
+			mBoard.executeMove(start, end);
+			switchPlayer();
+			return true;
+		}
+		return false;
+	}
+	
 	public Board getBoard() {
 		return mBoard;
 	}
 	
 	public Player getActivePlayer() {
 		return mAcvitePlayer;
+	}
+
+	public boolean isValidSelection(Point position) {
+		Piece p = mBoard.pieceAt(position);
+		return p != null && p.player == mAcvitePlayer;
 	}
 }

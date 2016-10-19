@@ -21,7 +21,7 @@ public abstract class Piece {
 			return false;
 		}
 		
-		Piece endPosPiece = board.getPiece(endPos);
+		Piece endPosPiece = board.pieceAt(endPos);
 		if (endPosPiece == null) {
 			return canMove(board, endPos);
 		}

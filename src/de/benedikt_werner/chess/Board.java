@@ -37,8 +37,8 @@ public class Board {
 	}
 	
 	public void executeMove(Point piecePos, Point endPos) {
-		Piece piece = getPiece(piecePos);
-		Piece other = getPiece(endPos);
+		Piece piece = pieceAt(piecePos);
+		Piece other = pieceAt(endPos);
 		if (other != null) {
 			other.alive = false;
 			other.position = new Point(-1, -1);
@@ -48,15 +48,15 @@ public class Board {
 		mBoard[piecePos.x][piecePos.y] = null;
 	}
 	
-	public Piece getPiece(Point position) {
-		return getPiece(position.x, position.y);
+	public Piece pieceAt(Point position) {
+		return pieceAt(position.x, position.y);
 	}
 	
-	public Piece getPiece(Point position, int x, int y) {
-		return getPiece(position.x + x, position.y + y);
+	public Piece pieceAt(Point position, int x, int y) {
+		return pieceAt(position.x + x, position.y + y);
 	}
 	
-	public Piece getPiece(int x, int y) {
+	public Piece pieceAt(int x, int y) {
 		return mBoard[x][y];
 	}
 	

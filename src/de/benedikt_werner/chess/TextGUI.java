@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -64,7 +65,7 @@ public class TextGUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("JChess");
 		frame.setBounds(100, 100, 450, 315);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -77,21 +78,17 @@ public class TextGUI {
 		JButton btnSelect = new JButton("Select");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int selectionStart = output.getSelectionStart();
-				int selectionEnd = output.getSelectionEnd();
-				if (selectionEnd - selectionStart != 1) {
-					comment("Invalid selection");
-				}
-				else {
-					int x = selectionStart / OUTPUT_WIDTH - 2;
-					int y = selectionStart % OUTPUT_WIDTH - 3;
-					if (x < 0 || y < 0 || x >= 8 || y >= 8) {
-						comment("Invalid selection");
-						return;
+				Optional<Point> point = getSelection();
+				if (point.isPresent()) {
+					Point p = point.get();
+					if (mGame.isValidSelection(p)) {
+						comment("Selected (" + p.x + "|" + p.y + ")");
+						mSelection = p;
+						drawBoard();
 					}
-					comment("Selected (" + x + "|" + y + ")");
-					mSelection = new Point(x, y);
-					drawBoard();
+					else {
+						comment("Invalid selection");
+					}
 				}
 			}
 		});
@@ -99,6 +96,25 @@ public class TextGUI {
 		frame.getContentPane().add(btnSelect);
 		
 		JButton btnMove = new JButton("Move");
+		btnMove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (mSelection.x == -1 || mSelection.y == -1) {
+					comment("No piece selected");
+					return;
+				}
+				Optional<Point> point = getSelection();
+				if (point.isPresent()) {
+					Point p = point.get();
+					if (mGame.executeMove(mSelection, p)) {
+						comment("Moved " + mBoard.pieceAt(p) + " at (" + mSelection.x + "|" + mSelection.y + ") to (" + p.x + "|" + p.y + ")");
+						drawBoard();
+					}
+					else {
+						comment("Invalid move");
+					}
+				}
+			}
+		});
 		btnMove.setBounds(220, 45, 89, 23);
 		frame.getContentPane().add(btnMove);
 		
@@ -109,6 +125,20 @@ public class TextGUI {
 		lblComment = new JLabel("");
 		lblComment.setBounds(220, 108, 204, 40);
 		frame.getContentPane().add(lblComment);
+	}
+	
+	private Optional<Point> getSelection() {
+		int selectionStart = output.getSelectionStart();
+		int selectionEnd = output.getSelectionEnd();
+		if (selectionEnd - selectionStart == 1) {
+			int x = selectionStart / OUTPUT_WIDTH - 2;
+			int y = selectionStart % OUTPUT_WIDTH - 3;
+			if (x >= 0 && y >= 0 && x < 8 && y < 8) {
+				return Optional.of(new Point(x, y));
+			}
+		}
+		comment("Invalid selection");
+		return Optional.empty();
 	}
 	
 	private void drawBoard() {
