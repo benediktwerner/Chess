@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -170,6 +171,9 @@ public class TextGUI {
 		boardString += line + "</span></html>";
 		output.setText(boardString);
 		lblPlayer.setText(mGame.getActivePlayer().toString());
+		if (mGame.isGameOver()) {
+			JOptionPane.showMessageDialog(frame, "Game over! Player " + mGame.getActivePlayer() + " won!", "Game over", JOptionPane.OK_OPTION);
+		}
 	}
 	
 	private void comment(String text) {
