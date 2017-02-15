@@ -91,21 +91,21 @@ public class Board {
     }
 
     public void print() {
-        String countTop = " |";
-        String line = "-+";
+        String countTop = " | ";
+        String line = "-+-";
         for (int i = 0; i < mBoard.length; i++) {
-            countTop += (char) (i+'A');
-            line += "-";
+            countTop += (char) (i+'A') + " ";
+            line += "--";
         }
         countTop += "|";
         line += "+-";
         System.out.println(countTop);
         System.out.println(line);
         for (int x = mBoard.length-1; x >= 0; x--) {
-            String s = (x+1) + "|";
+            String s = (x+1) + "| ";
             for (int y = 0; y < mBoard[x].length; y++) {
                 Piece p = mBoard[x][y]; 
-                s += (p == null) ? " " : p;
+                s += (p == null) ? "  " : p + " ";
             }
             System.out.println(s + "|" + (x+1));
         }
